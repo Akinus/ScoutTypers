@@ -16,6 +16,7 @@ from datetime import datetime
 from itertools import repeat
 import subprocess as sub
 from subprocess import STDOUT, check_output
+from re import search
 import time
 import socket
 import threading
@@ -170,14 +171,34 @@ def addPort(addy, num, banner):
         tree = ET.parse('pyscan.xml')
         root = tree.getroot()
         host = root.find(addyStr)
-        if host.find('./port/[number="'+str(num)+'"]') == None:
-            newport = ET.SubElement(host, 'port')
-            newportnum = ET.SubElement(newport, 'number')
-            newportnum.text = str(num)
-            newportbanner = ET.SubElement(newport, 'banner')
-            newportbanner.text = banner
-            indent(root)
-            tree.write("pyscan.xml")
+        if search('ssh', banner):
+            print('SSH PORT FOUND!!')
+            if host.find('./port/[number="'+str(num)+'"]') == None:
+                newport = ET.SubElement(host, 'port')
+                newportnum = ET.SubElement(newport, 'number')
+                newportnum.text = str(num)
+                newportbanner = ET.SubElement(newport, 'banner')
+                newportbanner.text = banner
+                newtunnel = ET.SubElement(newport, 'tunnel')
+                newtunnellport = ET.SubElement(newtunnel, 'local-port')
+                newtunnellport.text = ""
+                newtunneltarget = ET.SubElement(newtunnel, 'tunnel-target')
+                newtunneltarget.text = ""
+                newtunneltport = ET.SubElement(newtunnel, 'tunnel-target-port')
+                newtunneltport.text = ""
+                newtunnelbuild = ET.SubElement(newtunnel, 'existing-tunnel-port')
+                newtunnelbuild.text = ""
+                indent(root)
+                tree.write("pyscan.xml")
+        else:
+            if host.find('./port/[number="'+str(num)+'"]') == None:
+                newport = ET.SubElement(host, 'port')
+                newportnum = ET.SubElement(newport, 'number')
+                newportnum.text = str(num)
+                newportbanner = ET.SubElement(newport, 'banner')
+                newportbanner.text = banner
+                indent(root)
+                tree.write("pyscan.xml")
     return
 
 def bannerGrab(addy, port):
