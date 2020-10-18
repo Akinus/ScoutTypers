@@ -336,7 +336,8 @@ def initiate():
                                                 ", action="store_true")
     uinput.add_argument("--show", help = "Shows the currently logged results for the address.  When used with --map \
                                             this will recreate the network map also", action="store_true")
-    uinput.add_argument("-m", "--map", help = "Creates a network map to a .png file", action="store_true")
+    uinput.add_argument("-m", "--map", help = "Creates a network map to a .graphml file \
+                                                Download yEd to edit pyscan.graphml from https://www.yworks.com/products/yed", action="store_true")
 
     ipstart = 1
     ipend = 254
