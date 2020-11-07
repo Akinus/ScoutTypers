@@ -1,0 +1,14 @@
+LINUX
+The following files can be found on Linux systems:
+
+/etc/passwd
+/etc/shadow
+/etc/issue
+/etc/group
+/etc/hostname
+• General messages and system related entries: /var/log/messages
+• Cron logs: /var/log/cron.log
+• Authentication logs: /var/log/secure or /var/log/auth.log
+
+
+

@@ -1,0 +1,50 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T12:57:44-07:00
+
+====== Network Scanning ======
+Created Friday 30 October 2020
+
+ARP Scan:
+# nmap -n -sn -PR 10.5.23.0/24
+Reverse DNS lookup of IP range:
+# nmap -sL 10.5.23.0/24
+Nmap host discovery (ARP, ICMP, SYN 443/tcp,
+ACK 80/tcp):
+# nmap -sn -n 10.5.23.0/24
+TCP scan (SYN scan = half-open scan):
+# nmap -Pn -n -sS -p
+22,25,80,443,8080 10.5.23.0/24
+List Nmap scripts:
+# ls /usr/share/nmap/scripts
+Scan for EternalBlue vulnerable hosts:
+# nmap -n -Pn -p 443 --script smbvuln-
+ms17-010 10.5.23.0/24
+Scan for vulnerabilities (script category filter):
+# nmap -n -Pn --script "vuln and safe"
+10.5.23.0/24
+Performance Tuning (1 SYN packet ≈ 60 bytes
+→ 20'000 packets/s ≈ 10 Mbps):
+# nmap -n -Pn --min-rate 20000
+10.5.23.0/24
+Useful nmap options:
+▪ -n: Disable name and port resolution
+▪ -PR: ARP host discovery
+▪ -Pn: Disable host discovery
+▪ -sn: Disable port scan (host discovery only)
+▪ -sS/-sT/-sU: SYN/TCP connect/UDP scan
+▪ --top-ports 50: Scan 50 top ports
+▪ -iL file: Host input file
+▪ -oA file: Write output files (3 types)
+▪ -sC: Script scan (default scripts)
+▪ --script <file/category>: Specific scripts
+▪ -sV: Version detection
+▪ -6: IPv6 scan
+The target can be specified using CIDR notation
+(10.5.23.0/24) or range definitions (10.13-
+37.5.1-23).
+Fast scan using masscan:
+# masscan -p80,8000-8100 --rate 20000
+10.0.0.0/8
+Public internet scan databases:
+▪ shodan.io, censys.io

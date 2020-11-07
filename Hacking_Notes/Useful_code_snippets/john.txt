@@ -1,0 +1,9 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+
+JOHN
+sudo john --wordlist=/usr/share/wordlists/rockyou.txt --rules pwd.txt --fork=10
+
+sudo john --wordlist=/usr/share/seclists/Passwords/xato-net-10-million-passwords-1000000.txt --rules pwd.txt --fork=10
+
+

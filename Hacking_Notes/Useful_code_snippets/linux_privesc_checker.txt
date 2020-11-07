@@ -1,0 +1,3 @@
+LINUX PRIVESC CHECKER
+wget http://www.securitysift.com/download/linuxprivchecker.py
+

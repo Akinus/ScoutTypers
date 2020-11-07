@@ -1,0 +1,23 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T12:58:56-07:00
+
+====== Cracking ======
+Created Friday 30 October 2020
+
+**Try SSH passwords from a wordlist:**
+# ncrack -p 22 --user root -P
+./passwords.txt 10.5.23.0/24
+
+**Determine hash type:**
+# hashid 869d[...]bd88
+
+**Show example hash types for hashcat:**
+# hashcat --example-hashes
+
+**Crack hashes (e.g. 5600 for NetNTLMv2 type):**
+# hashcat -m 5600 -a 0 hash.txt
+[[/path/to/wordlists/*]]
+
+**Crack hashes using John the Ripper:**
+# john hashes.txt

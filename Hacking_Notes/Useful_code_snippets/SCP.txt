@@ -1,0 +1,8 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2020-10-29T14:40:33-04:00
+
+====== SCP ======
+Created Thursday 29 October 2020
+
+scp -P 20095 [[defender@172.20.25.113:pcapX.pcapng]] . 

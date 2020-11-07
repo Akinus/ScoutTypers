@@ -1,0 +1,20 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T12:56:07-07:00
+
+====== Information Gathering ======
+Created Friday 30 October 2020
+
+Find owner/contact of domain or IP address:
+# whois compass-security.com
+Get nameservers and test for DNS zone transfer:
+# dig example.com ns
+# dig example.com axfr @n1.example.com
+Get hostnames from CT logs: Search for
+%.compass-security.com on https://crt.sh.
+Or using an nmap script:
+# nmap -sn -Pn compass-security.com
+--script hostmap-crtsh
+Combine various sources for subdomain enum:
+# amass enum -src -brute -min-forrecursive
+2 -d compass-security.com
