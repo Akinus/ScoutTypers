@@ -1,0 +1,23 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-11-12T18:52:23-05:00
+
+====== 1 Info Gathering ======
+Created Thursday 12 November 2020
+
+Initial Scan
+- sudo nmap -sS -Pn -T4 -A -sV 10.14.1.7 -p- > scan1.txt
+- scanio IP -p- -f -nZ
+
+-FTP Login
+	-I log in to the FTP server as anonymous and see it doesn’t have any files or directories listed.
+- sudo nmap -p 139,445 --script=smb-vuln* 10.14.1.2
+- sudo nmap -p 80 --script=http-enum.nse 10.14.1.7
+- sudo gobuster dir -u http://10.14.1.7/ -t 50 -w /usr/share/dirb/wordlists/common.txt  -o busted.txt -x php,sh,txt,py
+- ls -l /usr/share/nmap/scripts/http-wordpress*
+- sudo nmap -p 80 --script=http-wordpress-enum.nse 10.14.1.7
+- sudo nmap -p 3306 --script=mysql-enum.nse 10.14.1.7
+- sudo nmap -p 3306 --script=mysql-empty-password.nse 10.14.1.7
+- sudo nmap -p 3306 --script=mysql-users.nse 10.14.1.7
+- wpscan --url 10.14.1.7 --enumerate at --enumerate u
+- wpscan --url 10.14.1.7 --enumerate ap --plugins-detection aggressive -t 30

