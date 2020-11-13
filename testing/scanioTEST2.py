@@ -380,80 +380,77 @@ class scanjobs(object):
         secs = _secs
         ##DETERMINE TOTAL NUMBER OF SCANS
         totalcount = self.totalcount(hosts, ports)[0]
-        
-        ###START THREADS FOR PROGRESS TIME AND SCREEN
-        thread = threading.Thread(target=self.seconds, args=(secs,))
-        thread.daemon = True                            # Daemonize thread
-        thread.start()                                  # Start the execution
+        try:
+            ###START THREADS FOR PROGRESS TIME AND SCREEN
+            thread = threading.Thread(target=self.seconds, args=(secs,))
+            thread.daemon = True                            # Daemonize thread
+            thread.start()                                  # Start the execution
 
-        thread = threading.Thread(target=show.progress, args=(count, totalcount, secs, progtext, net, window))
-        thread.daemon = True                            # Daemonize thread
-        thread.start()                                  # Start the execution
+            u = Process(target=show.progress, args=(count, totalcount, secs, progtext, net, window))
+            u.daemon = True                            # Daemonize thread
+            u.start()                                  # Start the execution
 
-        ##START RESULTS CATCHER
-        res = io()
-        manager = Manager()
-        q = manager.Queue()
-        p = Process(target= res.process_results, args=(q, currcount, totalcount, progtext, net))
-        p.start()
-        
-        if scanType == 'callScanNC':
-            func = functools.partial(self.callScanNC, timeout, currcount, q, robust)
-        else:
-            func = functools.partial(self.callScanP, timeout, currcount, q, robust)
-
-        ##BEGIN SCAN THREADS
-        addys = self.totalcount(hosts, ports)[1]
-        pool = multiprocessing.Pool(processes=200, maxtasksperchild=50)
-        results = pool.map_async(func, addys)
-        results.wait()
-        # for i in addys:
-        #     try:
-        #         if scanType == 'callScanNC':
-        #             thread = Process(target=self.callScanNC, args=(i, timeout, currcount, q))
-        #         elif scanType == 'callScanP':
-        #             thread = Process(target=self.callScanP, args=(i, timeout, currcount, q))
-        #         elif scanType == 'callScanW':
-        #             thread = Process(target=self.callScanW, args=(i, timeout, currcount, q))
-        #         thread.daemon = True                            # Daemonize thread
-        #         thread.start()                                  # Start the execution
-        #         # self.scan(i, timeout, currcount)
-        #         # with Pool(processes=1, maxtasksperchild=1) as pool:
-        #         #     results = pool.starmap_async(self.scan, i)
-        #         #     results.wait()
-        #         #     with currcount.get_lock():
-        #         #         currcount.value += 1
-        #     except KeyboardInterrupt:
-        #         print('Error')
-        #         sys.exit(2)
-
-        ##CLOSE CATCHER
-        if p.is_alive:
-            p.terminate
-        
-        # ##### END
-        # window.addstr('***SCAN COMPLETE***')
-        # window.addstr('Press q to close this window')
-        # window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
-        # window.screen.nodelay(True)
-        # while True:
-        #     ch = window.screen.getch()
-        #     if ch == curses.KEY_DOWN:
-        #         window.mypad_pos += 1
-        #         window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
-        #     elif ch == curses.KEY_UP:
-        #         window.mypad_pos -= 1
-        #         window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
-        #     elif ch == ord('q'):
-        #         curses.endwin()
-        #         curses.nocbreak()
-        #         stdscr.keypad(False)
-        #         curses.echo()
-        #         curses.endwin()
-        #         return
-        #     else:
-        #         window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
+            ##START RESULTS CATCHER
+            res = io()
+            manager = Manager()
+            q = manager.Queue()
+            p = Process(target= res.process_results, args=(q, currcount, totalcount, progtext, net))
+            p.start()
             
+            if scanType == 'callScanNC':
+                func = functools.partial(self.callScanNC, timeout, currcount, q, robust)
+            else:
+                func = functools.partial(self.callScanP, timeout, currcount, q, robust)
+
+            ##BEGIN SCAN THREADS
+            addys = self.totalcount(hosts, ports)[1]
+            pool = multiprocessing.Pool(processes=200, maxtasksperchild=100)
+            results = pool.map_async(func, addys)
+            results.wait()
+            # for i in addys:
+            #     try:
+            #         if scanType == 'callScanNC':
+            #             thread = Process(target=self.callScanNC, args=(i, timeout, currcount, q))
+            #         elif scanType == 'callScanP':
+            #             thread = Process(target=self.callScanP, args=(i, timeout, currcount, q))
+            #         elif scanType == 'callScanW':
+            #             thread = Process(target=self.callScanW, args=(i, timeout, currcount, q))
+            #         thread.daemon = True                            # Daemonize thread
+            #         thread.start()                                  # Start the execution
+            #         # self.scan(i, timeout, currcount)
+            #         # with Pool(processes=1, maxtasksperchild=1) as pool:
+            #         #     results = pool.starmap_async(self.scan, i)
+            #         #     results.wait()
+            #         #     with currcount.get_lock():
+            #         #         currcount.value += 1
+            #     except KeyboardInterrupt:
+            #         print('Error')
+            #         sys.exit(2)
+
+            ##CLOSE CATCHER
+            u.join()
+        except(KeyboardInterrupt, SystemExit):
+            curses.nocbreak()
+            window.screen.keypad(False)
+            curses.echo()
+            curses.endwin()
+            if p.is_alive:
+                p.terminate()
+            if u.is_alive:
+                u.terminate()
+            # if pool.is_alive:
+            #     pool.terminate()
+            ##### END
+            # window.addstr('***SCAN COMPLETE***')
+            # window.addstr('Press q to close this window')
+            
+        finally:
+            results = show.printall(net)
+            print(results)
+            print('\n')
+            sys.exit(0)
+            os._exit
+        
     def callScanNC(self, timeout, currcount, q, robust, addys):
         addy = addys[0]
         tp = addys[1]
@@ -468,8 +465,9 @@ class scanjobs(object):
             tcp_res.kill()
             # tcp_args = ['nc -nvzw1 '+str(addy)+' '+str(tp)+' 2>&1']
             # result = check_output(['nc -nvzw1 '+str(addy)+' '+str(tp)+' 2>&1'], stderr=STDOUT, timeout=0.3)
-        except:
+        except (Exception, KeyboardInterrupt, SystemExit):
             result = 'Encountered and error while scanning {0}'.format(addy)
+            sys.exit(2)
             # print(result, end='\r')
 
         if "open" in result or "succ" in result:
@@ -549,8 +547,9 @@ class scanjobs(object):
             tcp_res.wait()
             out, err = tcp_res.communicate()
             tcp_res.kill()
-        except:
+        except (Exception, KeyboardInterrupt, SystemExit):
             out = 'BannerError.'
+            sys.exit(2)
 
         if search('concurrent connection', out):
             out = ''
@@ -564,8 +563,9 @@ class scanjobs(object):
             tcp_res.wait()
             out, err = tcp_res.communicate()
             tcp_res.kill()
-        except:
+        except (Exception, KeyboardInterrupt, SystemExit):
             out = 'NMAP-Error.'
+            sys.exit(2)
 
         if search('concurrent connection', out):
             out = ''
@@ -1095,19 +1095,24 @@ class _window(object):
         self.screen = curses.initscr()
         self.height,self.width = self.screen.getmaxyx()
         self.height -= 1
-        self.width -= 1
+        self.width -= 2
         self.pad = curses.newpad(500, self.width)
         self.pad.scrollok(True)
         self.pad.idlok(True)
+        # self.pad.move(1, 1)
         self.mypad_pos = 0
         curses.noecho()
         curses.cbreak()
+        curses.curs_set(0)
         self.screen.keypad(True)
         self.screen.nodelay(True)
+        self.screen.border(0)
+        # self.pad.border(0)
         curses.start_color()
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
         self.pad.bkgd(' ', curses.color_pair(1))
-        self.pad.refresh(0, 0, 0, 0, self.height, self.width)
+        self.screen.bkgd(' ', curses.color_pair(1))
+        self.pad.refresh(0, 0, 1, 1, self.height, self.width)
 
 class display(object):
     def __init__(self, rootFile = 'scanio.xml'):
@@ -1147,25 +1152,61 @@ class display(object):
             update = "Percent: [{0}] {1}% {2} {3}/{4}. {5}m {6}s spent. ~{7} ports/s     \
 ".format( "#"*block + "-"*(barLength-block), smallProgress, status, currcount.value, totalscans, mon, sec, pps)
             progtext.value = show.printall(net)
-            window.pad.border(0)
+            length = len(update.splitlines()) + len(str(progtext.value).splitlines()) + 10
+            window.pad.resize(length, window.width)
             window.pad.addstr(1, 1, update)
             window.pad.addstr(2, 1, progtext.value)
-            window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
+            window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
 
 
             ch = window.screen.getch()
             if ch == curses.KEY_DOWN:
                 window.mypad_pos += 1
-                window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
+                window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
             elif ch == curses.KEY_UP:
                 window.mypad_pos -= 1
-                window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
+                window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
             elif ch == ord('q'):
-                curses.endwin()
                 print("User cancelled the scan!")
                 curses.nocbreak()
                 window.screen.keypad(False)
                 curses.echo()
+                curses.endwin()
+                # results = show.printall(net)
+                # print(results)
+                # print('\n')
+                sys.exit(0)
+                raise KeyboardInterrupt
+                # print("You'll have to press ctrl-c to deliver the death blow...")
+            else:
+                window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
+            
+            time.sleep(0.05)
+        progress = 1
+        smallProgress = "{:.1f}".format(progress*100)
+        update = "Percent: [{0}] {1}% {2} {3}/{4}. {5}m {6}s spent. ~{7} ports/s     \
+".format( "#"*block + "-"*(barLength-block), smallProgress, status, currcount.value, totalscans, mon, sec, pps)
+        progtext.value = show.printall(net)
+        window.pad.addstr(1, 1, update)
+        window.pad.addstr(2, 1, progtext.value)
+        window.pad.addstr('***SCAN COMPLETE!***')
+        window.pad.addsty('Press q to exit this window...')
+        window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
+        window.screen.nodelay(False)
+        ch = window.screen.getch()
+        while True:
+            if ch == curses.KEY_DOWN:
+                window.mypad_pos += 1
+                window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
+            elif ch == curses.KEY_UP:
+                window.mypad_pos -= 1
+                window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
+            elif ch == ord('q'):
+                print("User cancelled the scan!")
+                curses.nocbreak()
+                window.screen.keypad(False)
+                curses.echo()
+                curses.endwin()
                 curses.endwin()
                 results = show.printall(net)
                 print(results)
@@ -1173,9 +1214,7 @@ class display(object):
                 print("You'll have to press ctrl-c to deliver the death blow...")
                 sys.exit(2)
             else:
-                window.pad.refresh(window.mypad_pos, 0, 1, 0, window.height, window.width)
-            
-            time.sleep(0.05)
+                window.pad.refresh(window.mypad_pos, 0, 1, 1, window.height, window.width)
         
 
     def indent(self, elem, level=0):
@@ -1340,14 +1379,18 @@ if __name__ == '__main__':
     scan.newScan(net)
 
     window = _window()
-    scan.start(secs, scanType, printnet, hosts, ports, timeout, count, robust, progressVar)
-    curses.endwin()
-    curses.nocbreak()
-    window.screen.keypad(False)
-    curses.echo()
-    curses.endwin()
-    results = show.printall(net)
-    print(results)
-    print('\n')
+    try:
+        scan.start(secs, scanType, printnet, hosts, ports, timeout, count, robust, progressVar)
+    except (Exception, KeyboardInterrupt, SystemExit):
+
+        curses.nocbreak()
+        window.screen.keypad(False)
+        curses.echo()
+        curses.endwin()
+    finally:
+        print('\n\n\n\n########################### RESULTS #######################\n')
+        results = show.printall(net)
+        print(results)
+        print('\n############################ END ##########################\n\n\n\n')
 
     
