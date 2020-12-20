@@ -1,0 +1,85 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2020-11-12T18:52:23-05:00
+
+====== 0x1 Recon ======
+Created Thursday 12 November 2020
+
+==== PASSIVE ====
+#Gather information to help inform password attcks and login information
+#Passive information gathering activities should be focused on identifying IP addresses, (sub)domains,
+finding external partners and services, the types of technologies used and any other useful
+information (including the names of employees working at the company, e-mail addresses, websites,
+customers, naming conventions, E-mail & VPN systems and sometimes even passwords).
+
+==== SEMI-PASSIVE ====
+#Access the site like a regular user to determine what technology is used.
+**DNS ENUM**
+#Get geneneral info about domain
+	whois [domain]
+#Query DNS record
+	nslookup [domain]
+	nslookup -type=[type] [domain]
+	Types:
+	**A: **contains the IP address of the domain.
+	**MX**: contains the mail exchange servers.
+	**CNAME: **used for aliasing domains and links any sub-domains with existing domain DNS records.
+	**NS: ** indicates the authoritative (or main) name serverfor the domain.
+	**SOA: **contains primary name server, timestamp showing last update, party responsible for the domain.
+	**PTR: ** or Pointer Records map an IPv4 address to the CNAME on the host. 
+	**TXT: **contains text inserted by the administrator.
+#DNS Zone Transfer
+	host -t ns [domain]
+	host -t axfr -l [domain] [NS for the domain]
+#Fierce automates the above, automatically running a DNS zone transfer.
+	fierce -dns [domain]
+
+**HARVEST EMAILS**
+#use emails to be able to target individuals in the company.
+	#d=domain, b=data source l=limit results
+	theHarvester -d cisco.com -b yahoo -l 100
+#RECON-NG
+#Powerful tool that requires some money to use API keys to harvest emails.
+	https://github.com/lanmaster53/recon-ng/wiki/Getting-Started
+
+==== ACTIVE ====
+#Host Discovery
+	nmap -sn 10.10.10.0/24
+#Initial Scans
+	sudo nmap -sS -Pn -T4 -A -sV [IP] -p- > scan1.txt
+	-or-
+	scanio IP -p- -f -nZ
+	https://nmap.org/book/reduce-scantime.html
+
+#With information from the open ports use the following methodology to enumerate further.
+	#**FTP Login**: I log in to the FTP server as anonymous and see it doesn’t have any files or directories listed.
+	#Scripts based on open ports:
+		#**SMB (p 137, 138, 139, 445)**
+		sudo nmap -p 139,445 --script=smb-vuln* 10.14.1.2
+		ls -ls /usr/share/nmap/scripts/smb*
+		rpcclient -U "" [target IP address] #null access use the following commands after:
+			querydominfo
+			enumdomusers #returns number of users in hex
+			queryuser [username/rid in hex]
+			enum <tab><tab> #for help
+		enum4linux [target IP] #more automated version
+		#**HTTP (p 80, 8080, 443)**
+		sudo nmap -p 80 --script=http-enum.nse 10.14.1.7
+		sudo gobuster dir -u http://10.14.1.7/ -t 50 -w /usr/share/dirb/wordlists/common.txt  -o busted.txt -x php,sh,txt,py
+		#**WORDPRESS**
+		ls -l /usr/share/nmap/scripts/http-wordpress*
+		sudo nmap -p 80 --script=http-wordpress-enum.nse 10.14.1.7
+		wpscan --update
+		wpscan --url 10.14.1.7 --enumerate at --enumerate u   #checks themes and user logins
+		wpscan --url 10.14.1.7 --enumerate ap --plugins-detection aggressive -t 30   #checks plugins
+		#**mySQL (p 3306)**
+		sudo nmap -p 3306 --script=mysql-enum.nse 10.14.1.7
+		sudo nmap -p 3306 --script=mysql-empty-password.nse 10.14.1.7
+		sudo nmap -p 3306 --script=mysql-users.nse 10.14.1.7
+		#**SNMP (p 161)**
+		ls -l /usr/share/nmap/scripts/snmp*
+		onesixtyone -h #You'll need the community string info for this.
+		#**Need help?**
+		nmap --script-help [nse extension name]
+		
+#After your scripts complete, use the information gathered to poke around further. For example, once your dirbuster scan completes, go to some of the URLs listed in the output to see what a regular search of the site wouldn't show you. Some of these scans may also return vulnerabilities. OSINT those to find out way into the system.

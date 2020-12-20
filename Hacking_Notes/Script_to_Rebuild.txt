@@ -1,0 +1,27 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2020-12-19T18:06:27-05:00
+
+====== Script to Rebuild ======
+Created Saturday 19 December 2020
+
+===== Instructions =====
+#In the even your kali machine crashes, these were all the tools you installed or modifications you made over time to get your machine to smoothly secure offensively.
+
+__#__Copy over the install you did from the Georgia Weidman Pentesting Book
+
+#Decompress rockyou.txt
+gzip -d /usr/share/wordlists/rockyou.txt.gz /usr/share/wordlists/rockyou.txt
+
+#Install openVAS
+	sudo apt-get install gvm
+	sudo gvm-setup #requires postgresql version 13 installed
+		#If you get an error edit the " port = " lines in the following configuration files. 
+		   [[/etc/postgresql/13/main/postgresql.conf]] #port=5432
+-and-
+		   [[/etc/postgresql/12/main/postgresql.conf]] #port=5433
+		#Then restart postgres using:
+		sudo systemctl restart postgresql
+
+#Install decompressing tools
+sudo apt-get install unrar
