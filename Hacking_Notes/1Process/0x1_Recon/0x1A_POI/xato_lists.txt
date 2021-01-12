@@ -1,0 +1,16 @@
+XATO LISTS
+PASSWORDS:
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-10.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-100.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-1000.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-100000.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-1000000.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords-dup.txt
+/usr/share/seclists/Passwords/xato-net-10-million-passwords.txt
+
+
+USERNAMES
+/usr/share/seclists/Usernames/xato-net-10-million-usernames-dup.txt
+/usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
+

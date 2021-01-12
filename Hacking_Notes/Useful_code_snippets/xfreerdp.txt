@@ -1,0 +1,8 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2021-01-05T18:13:06-05:00
+
+====== xfreerdp ======
+Created Tuesday 05 January 2021
+
+xfreerdp /v:10.50.x.x /u:student /p:password /size:1920x1000 +clipboard

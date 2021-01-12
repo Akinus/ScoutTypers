@@ -1,0 +1,39 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2021-01-09T07:55:05-05:00
+
+====== Scan Scripts ======
+Created Saturday 09 January 2021
+
+== Bash Script ==
+//#!/bin/bash//
+
+//echo "Enter network address (e.g. 192.168.0): "//
+//read net //
+//echo "Enter starting host range (e.g. 1): "//
+//read start//
+//echo "Enter ending host range (e.g. 254): "//
+//read end//
+//echo "Enter ports space-delimited (e.g. 20 22 25 80): "//
+//read ports //
+//for ((i=$start; $i<=$end; i++)); do//
+//    nc -nvzw1 $net.$i $ports 2>&1 | grep open//
+//done//
+# (-v) running verbosely (-v on Linux, -vv on Windows),
+# (-n) not resolving names. numeric only IP(no D.S)
+# (-z) without sending any data. zero-I/O mode(used for scanning)
+#(-w1) waiting no more than 1second for a connection to occur
+# (2>&1) redirect STDERR to STDOUT. Results of scan are errors and need to redirect to output to grep
+# ( | grep open) for Debian to display only open connections
+# ( | grep succeeded) for Ubuntu to display only the open connections
+done
+
+== One Liner scan scripts ==
+//**Scan 1 system for a range of ports using Netcat:**//
+//for i in {20..65535}; do nc -nzvw1 192.168.65.20 $i 2>&1 & done | grep -E 'succ|open$'//
+//**Scan 1 system for a range of ports using /DEV/TCP:**//
+//for p in {1..1023}; do(echo >/dev/tcp/10.0.0.104/$p) >/dev/null 2>&1 && echo "$p open"; done//
+//**Scan a range of IPs for specific ports using Netcat:**//
+//for i in {1..254}; do nc -nvzw1 192.168.65.$i 20-23 80 2>&1 & done | grep -E 'succ|open$'//
+//**Ping scan a range of IPs:**//
+//for i in {1..254}; do (ping -c 1 192.168.65.$i | grep "bytes from" &) ; done//

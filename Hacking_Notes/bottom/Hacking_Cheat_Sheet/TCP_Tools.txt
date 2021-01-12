@@ -1,0 +1,11 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-10-30T12:56:20-07:00
+
+====== TCP Tools ======
+Created Friday 30 October 2020
+
+Listen on TCP port:
+# ncat -l -p 1337
+Connect to TCP port:
+# ncat 10.5.23.42 1337

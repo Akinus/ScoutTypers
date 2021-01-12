@@ -1,0 +1,51 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+Creation-Date: 2021-01-09T16:34:13-05:00
+
+====== 2Useful Linux Cmds ======
+Created Saturday 09 January 2021
+
+== XFREERDP ==
+xfreerdp [[/v:192.168.144.10]] /u:student /p:lab /size:1920x1000 +clipboard
+
+== SCP ==
+scp -P 20095 [[defender@172.20.25.113:pcapX.pcapng]] . 
+
+== PYTHON SIMPLE SERVER ==
+python -m SimpleHTTPServer
+-or-
+python3 -m http.server 8081 ([Optional: port])
+
+== LINUX ADMIN ==
+#Kick a user from the logged in session:
+sudo pkill -KILL -u <username>
+
+#Lock a user's access:
+sudo passwd -l <username>
+
+#Check status of user account (**LOOK FOR !**)
+sudo awk -F: '/abdullayev.coshgun/ {print $1,$2}' [[/etc/shadow]]
+
+== SSH Key Generator: ==
+Ssh-keygen -t rsa -C “<add comment>”	
+Find the key by navigating to /root/.ssh
+Ssh-copy-id <target@ipaddress> -p <port established for listening>
+#Gives bob the key for SSH, gets added to the targets list of authorized keys.
+#Only works for the user you send it to. Useful if you ssh a lot. Do this with the blue hosts. Only need to create one key, send it to all hosts.
+
+== SSH Alias Login ==
+#Create aliases to ssh in easier without keys.
+nano ~/.bashrc
+#Scroll down till you see the aliases for ll.
+#Add the following and match your IP and Password.
+alias gh='sshpass -p "{PASS}" ssh -o StrictHostKeyChecking=no -X student@{IP}'
+
+== Find stuff ==
+find / -name “what you want to find” 2>&1 | grep -v "Permission denied"
+
+== Random ==
+export [variable] #lets you save variables across shells which lets us use the command on a penetration test without the user knowing what were running.
+$histsize #set amount of commands that can be set.
+$histfile #controls what is in the history
+ctrl + r #invokes the reverse command search
+cut -d ":" -f 1 /etc/passwd #Cuts all the users from the file using : as a delimeter and selecting the first field per line.

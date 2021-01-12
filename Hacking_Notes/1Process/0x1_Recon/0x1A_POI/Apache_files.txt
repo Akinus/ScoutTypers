@@ -1,0 +1,10 @@
+APACHE FILES
+• Apache access log: /var/log/apache/access.log
+• Apache access log: /var/log/apache2/access.log
+• Apache access log: /var/log/httpd/access_log
+• Apache error log: /var/log/apache/error.log
+• Apache error log: /var/log/apache2/error.log
+• Apache error log: /var/log/httpd/error_log
+
+
+
