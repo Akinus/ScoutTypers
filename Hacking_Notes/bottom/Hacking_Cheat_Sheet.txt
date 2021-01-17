@@ -1,7 +1,0 @@
-Content-Type: text/x-zim-wiki
-Wiki-Format: zim 0.4
-Creation-Date: 2020-10-30T12:55:22-07:00
-
-====== Hacking Cheat Sheet ======
-Created Friday 30 October 2020
-

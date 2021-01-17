@@ -12,9 +12,9 @@ xfreerdp [[/v:192.168.144.10]] /u:student /p:lab /size:1920x1000 +clipboard
 scp -P 20095 [[defender@172.20.25.113:pcapX.pcapng]] . 
 
 == PYTHON SIMPLE SERVER ==
-python -m SimpleHTTPServer
+python -m SimpleHTTPServer [port]
 -or-
-python3 -m http.server 8081 ([Optional: port])
+python3 -m http.server [port]
 
 == LINUX ADMIN ==
 #Kick a user from the logged in session:

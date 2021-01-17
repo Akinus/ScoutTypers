@@ -2,10 +2,7 @@ Content-Type: text/x-zim-wiki
 Wiki-Format: zim 0.6
 Creation-Date: 2020-12-19T17:32:14-05:00
 
-====== 0x2 Identify AV ======
-
-===== (Attack Vector) =====
-Created Saturday 19 December 2020
+====== 0x2 Vuln Assess ======
 
 ==== Vulnerability Assessments ====
 #Vulnerability scanning is often confused with penetration testing. A vulnerability assessment is the
@@ -18,6 +15,9 @@ confirming that security measures are sufficient to withstand a real attack.
 #Search known services on/OS versions/other information found in the last step:
 https://www.exploit-db.com/
 https://cve.mitre.org/cve/search_cve_list.html
+https://www.securityfocus.com
+https://packetstormsecurity.com
+
 #You can use searchploit in the terminal:
 	searshsploit [term or list of terms]
 	searchsploit -e [term or list of terms] #use //exact // to narrow search
@@ -27,12 +27,33 @@ https://cve.mitre.org/cve/search_cve_list.html
 		cp $(locate 40614.py) [new name] 
 #If there is a metasploit framework option check:
 	msfconole
+	
+
+== NMAP ==
 #NMAP can also be used to check vulnerabilities, but those scripts were included in the previous step.
+//nmap --script vuln [IP]//
 
 ==== Automating Assessments ====
+#All automated scans should be confirmed with manual testing.
+
+== OpenVAS ==
 #Use [[../../Script_to_Rebuild.txt|OpenVAS]]
 	sudo gvm-start
 	https://127.0.0.1:9392 #Requires username and password, if you forget you can change it:
 		sudo gvmd --user=[username] --new-password=[password]
+
+== Nessus ==
+1. Install nessus:
+	a. Navigate to https://www.tenable.com/downloads/nessus?loginAttempted=true and download the amd64 version for kali.
+	b. In kali run:
+		sudo apt install ./Downloads/Nessus-8.13.1-debian6_amd64.deb 
+		/bin/systemctl start nessusd.service
+	c. Go to [[https://localhost:8834]] in browser.
+
+
+
+
+
+
 
 

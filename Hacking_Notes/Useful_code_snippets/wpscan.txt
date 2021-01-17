@@ -1,3 +1,0 @@
-WPSCAN
-wpscan --url http://10.13.1.58/wordpress -t 35 --plugins-detection aggressive -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 
-

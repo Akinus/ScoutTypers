@@ -1,3 +1,0 @@
-GOBUSTER COMMANDS
-gobuster dir -u 10.13.1.4 -t 200 --wordlist='/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt'
-

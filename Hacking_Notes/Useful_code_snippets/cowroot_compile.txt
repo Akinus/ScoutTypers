@@ -1,3 +1,0 @@
-COWROOT COMPILE
-gcc cowroot.c -o cowroot -pthread
-
